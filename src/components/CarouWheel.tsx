@@ -2,30 +2,17 @@ import type { EmblaCarouselType, EmblaOptionsType } from 'embla-carousel'
 import useEmblaCarousel from 'embla-carousel-react'
 import Autoplay from 'embla-carousel-autoplay'
 import useElementSize from '../hooks/useElementSize'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import bezier from 'bezier-easing'
 
 function calculateThetaFromArcLength(L: number, r: number): number {
-  if (L <= 0 || r <= 0) {
-    console.error('L and r must be positive numbers.')
-  }
-
   const thetaRadians = L / r
-
   const thetaDegrees = thetaRadians * (180 / Math.PI)
   return thetaDegrees
 }
 
 function calculateArcLength(R: number, r: number): number {
-  const d = r
-  if (R <= 0 || r <= 0 || d <= 0) {
-    console.error('R, r, and d must be positive numbers.')
-  }
-  if (d > R + r || d < Math.abs(R - r)) {
-    console.error('The circles do not intersect.')
-  }
-
-  let cosTheta = (2 * r * r - R * R) / (2 * r * r);
+  let cosTheta = (2 * r * r - R * R) / (2 * r * r)
 
   if (cosTheta < -1) cosTheta = -1
   if (cosTheta > 1) cosTheta = 1
@@ -40,7 +27,7 @@ export default function CarouWheel() {
   const slides = ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven']
   const circleBaseSize = 60
 
-  const scaleEasing = useMemo(() => bezier(0.7, 0, 1, 0.7), [])
+  const scaleEasing = useMemo(() => bezier(1, 0, 0.8, 0.8), [])
 
   const [containerRef, containerSize] = useElementSize()
 
@@ -62,35 +49,31 @@ export default function CarouWheel() {
     emblaApi.on('scroll', onScroll)
   }, [emblaApi, onScroll])
 
-  const circles = useMemo(
-    () =>
-      slides.map((slide, index) => {
-        const slideProgress = index / (slides.length - 1)
+  const circles = slides.map((slide, index) => {
+    const slideProgress = index / (slides.length - 1)
 
-        const scaleProgress = 1 - Math.abs(slideProgress - scrollProgress)
+    const scaleProgress = 1 - Math.abs(slideProgress - scrollProgress)
 
-        const minScale = 1
-        const maxScale = 3
-        const circleScale =
-          minScale + scaleEasing(scaleProgress) * (maxScale - minScale)
+    const minScale = 1
+    const maxScale = 3
+    const circleScale =
+      minScale + scaleEasing(scaleProgress) * (maxScale - minScale)
 
-        const circleSize = circleBaseSize * circleScale
+    const circleSize = circleBaseSize * circleScale
 
-        const arcLength = calculateArcLength(
-          containerSize.width / 2,
-          circleSize / 2,
-        )
+    const arcLength = calculateArcLength(
+      containerSize.width / 2,
+      circleSize / 2,
+    )
 
-        return {
-          index,
-          progress: slideProgress,
-          scale: circleScale,
-          size: circleSize,
-          arcLength,
-        }
-      }),
-    [scrollProgress, slides],
-  )
+    return {
+      index,
+      progress: slideProgress,
+      scale: circleScale,
+      size: circleSize,
+      arcLength,
+    }
+  })
 
   const totalArcLength = circles.reduce(
     (total, circle) => total + circle.arcLength,
@@ -131,54 +114,33 @@ export default function CarouWheel() {
           ref={containerRef}
           className="absolute inset-y-0 right-0 aspect-square rounded-full border border-zinc-500"
         >
-          {positionedCircles.map((circle, index) => {
-            // const slideProgress = index / (slides.length - 1)
-
-            // const scaleProgress = 1 - Math.abs(slideProgress - scrollProgress)
-
-            // const minScale = 1
-            // const maxScale = 3
-            // const circleScale =
-            //   minScale + scaleEasing(scaleProgress) * (maxScale - minScale)
-
-            // const circleSize = circleBaseSize * circleScale
-
-            const angle = circle.theta
-
-            return (
+          {positionedCircles.map((circle, index) => (
+            <div
+              key={index}
+              className="absolute inset-0 flex justify-end items-center"
+              style={{
+                transform: `rotate(${circle.theta}deg)`,
+              }}
+            >
               <div
-                key={index}
-                className="absolute inset-0 flex justify-end items-center"
+                className="size-0 flex justify-center items-center"
                 style={{
-                  transform: `rotate(${angle}deg)`,
+                  transform: `rotate(${-circle.theta}deg)`,
                 }}
               >
                 <div
-                  className="size-0 flex justify-center items-center"
+                  className="shrink-0 flex justify-center items-center rounded-full bg-zinc-300/30"
                   style={{
-                    transform: `rotate(${-angle}deg)`,
+                    width: `${circleBaseSize}px`,
+                    height: `${circleBaseSize}px`,
+                    transform: `scale(${circle.scale})`,
                   }}
                 >
-                  <div
-                    className="shrink-0 flex justify-center items-center rounded-full bg-zinc-300/30"
-                    style={{
-                      width: `${circleBaseSize}px`,
-                      height: `${circleBaseSize}px`,
-                      transform: `scale(${circle.scale})`,
-                    }}
-                  >
-                    {slides[index]}
-                    {/* {calculateArcLength(
-                      containerSize.width / 2,
-                      circleSize / 2,
-                      containerSize.width / 2 - circleSize / 2,
-                    )} */}
-                    {/*{circle.arcLength.toFixed(3)}}*/}
-                  </div>
+                  {slides[index]}
                 </div>
               </div>
-            )
-          })}
+            </div>
+          ))}
         </div>
       </div>
       <div
