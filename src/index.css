@@ -29,6 +29,7 @@ body,
 
 #root {
   place-items: center;
+  padding: 1.5rem;
 }
 
 body {
