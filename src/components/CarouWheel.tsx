@@ -25,11 +25,15 @@ function calculateArcLength(R: number, r: number): number {
 
 export default function CarouWheel() {
   const slides = ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven']
-  const circleBaseSize = 40
 
   const scaleEasing = useMemo(() => bezier(1, 0, 0.8, 0.8), [])
 
   const [containerRef, containerSize] = useElementSize()
+
+  const circleBaseSize = (40 / 448) * containerSize.height
+
+  const circleScaleMin = 1
+  const circleScaleMax = 3
 
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { align: 'center', loop: false, axis: 'y', dragFree: true },
@@ -53,9 +57,6 @@ export default function CarouWheel() {
 
     onScroll(emblaApi)
   }, [emblaApi, onScroll])
-
-  const circleScaleMin = 1
-  const circleScaleMax = 3
 
   const circles = slides.map((slide, index) => {
     const slideProgress = index / (slides.length - 1)
