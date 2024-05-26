@@ -32,7 +32,7 @@ export default function CarouWheel() {
   const [containerRef, containerSize] = useElementSize()
 
   const [emblaRef, emblaApi] = useEmblaCarousel(
-    { align: 'center', loop: false, axis: 'y' },
+    { align: 'center', loop: false, axis: 'y', dragFree: true },
     // [Autoplay({ delay: 1000 })],
   )
 
@@ -44,20 +44,27 @@ export default function CarouWheel() {
   useEffect(() => {
     if (!emblaApi) return
 
-    onScroll(emblaApi)
+    emblaApi.on('pointerUp', (emblaApi) => {
+      const { scrollTo } = emblaApi.internalEngine()
+      scrollTo.distance(0, true)
+    })
 
     emblaApi.on('scroll', onScroll)
+
+    onScroll(emblaApi)
   }, [emblaApi, onScroll])
+
+  const circleScaleMin = 1
+  const circleScaleMax = 3
 
   const circles = slides.map((slide, index) => {
     const slideProgress = index / (slides.length - 1)
 
     const scaleProgress = 1 - Math.abs(slideProgress - scrollProgress)
 
-    const minScale = 1
-    const maxScale = 3
     const circleScale =
-      minScale + scaleEasing(scaleProgress) * (maxScale - minScale)
+      circleScaleMin +
+      scaleEasing(scaleProgress) * (circleScaleMax - circleScaleMin)
 
     const circleSize = circleBaseSize * circleScale
 
@@ -107,12 +114,21 @@ export default function CarouWheel() {
     }
   })
 
+  const margin = (circleBaseSize * circleScaleMax) / 2
+
   return (
-    <div className="min-h-96 flex outline outline-zinc-800 resize _overflow-auto">
-      <div className="basis-0 flex-grow relative">
+    <div className="h-[42rem] min-h-[42rem] w-[54rem] min-w-[42rem] flex rounded-3xl outline outline-zinc-500/30 resize overflow-hidden">
+      <div
+        className="basis-0 flex-grow relative"
+        style={{
+          marginTop: `${margin}px`,
+          marginRight: `${margin}px`,
+          marginBottom: `${margin}px`,
+        }}
+      >
         <div
           ref={containerRef}
-          className="absolute inset-y-0 right-0 aspect-square rounded-full border border-zinc-500"
+          className="absolute inset-y-0 right-0 aspect-square rounded-full outline outline-zinc-500/30"
         >
           {positionedCircles.map((circle, index) => (
             <div
@@ -122,18 +138,15 @@ export default function CarouWheel() {
                 transform: `rotate(${circle.theta}deg)`,
               }}
             >
-              <div
-                className="size-0 flex justify-center items-center"
-                style={{
-                  transform: `rotate(${-circle.theta}deg)`,
-                }}
-              >
+              <div className="size-0 flex justify-center items-center">
                 <div
-                  className="shrink-0 flex justify-center items-center rounded-full bg-zinc-300/30"
+                  className="shrink-0 flex justify-center items-center rounded-full bg-zinc-500/30"
                   style={{
                     width: `${circleBaseSize}px`,
                     height: `${circleBaseSize}px`,
-                    transform: `scale(${circle.scale})`,
+                    transform: `rotate(${-circle.theta}deg) scale(${
+                      circle.scale
+                    })`,
                   }}
                 >
                   {slides[index]}
@@ -144,16 +157,21 @@ export default function CarouWheel() {
         </div>
       </div>
       <div
-        className="basis-0 flex-grow-[1] relative overflow-hidden"
+        className="basis-0 flex-grow-[2] relative overflow-hidden"
         ref={emblaRef}
       >
-        <div className="h-full relative">
+        <div className="h-full relative [backface-visibility:hidden] [touch-action:pan-x_pinch-zoom]">
           {slides.map((slide, index) => (
-            <div
-              key={index}
-              className="h-full flex justify-center items-center text-4xl border border-zinc-600 snap-center"
-            >
-              {slide}
+            <div key={index} className="h-full w-full relative">
+              <div
+                className="absolute inset-0 flex justify-center items-center text-4xl rounded-3xl outline -outline-offset-8 outline-zinc-500/30 snap-center"
+                style={{
+                  marginTop: `${margin}px`,
+                  marginBottom: `${margin}px`,
+                }}
+              >
+                {slide}
+              </div>
             </div>
           ))}
         </div>
