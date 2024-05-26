@@ -17,7 +17,6 @@ function calculateThetaFromArcLength(L: number, r: number): number {
 }
 
 function calculateArcLength(R: number, r: number): number {
-  // console.log({ R, r })
   const d = r
   if (R <= 0 || r <= 0 || d <= 0) {
     console.error('R, r, and d must be positive numbers.')
@@ -26,12 +25,12 @@ function calculateArcLength(R: number, r: number): number {
     console.error('The circles do not intersect.')
   }
 
-  let cosTheta = (r * r + d * d - R * R) / (2 * r * d)
+  let cosTheta = (2 * r * r - R * R) / (2 * r * r);
 
   if (cosTheta < -1) cosTheta = -1
   if (cosTheta > 1) cosTheta = 1
 
-  const theta = Math.acos(cosTheta)
+  const theta = Math.acos(cosTheta / 2)
 
   const arcLength = r * theta
   return arcLength
@@ -47,7 +46,7 @@ export default function CarouWheel() {
 
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { align: 'center', loop: false, axis: 'y' },
-    // [Autoplay({ delay: 3000 })],
+    // [Autoplay({ delay: 1000 })],
   )
 
   const [scrollProgress, setScrollProgress] = useState(0)
@@ -111,7 +110,7 @@ export default function CarouWheel() {
     currentArcLength += space / 2
     currentArcLength += circle.arcLength / 2
 
-    const position = currentArcLength
+    const position = currentArcLength - totalArcLength / 2
 
     currentArcLength += circle.arcLength / 2
     currentArcLength += space / 2
@@ -168,13 +167,13 @@ export default function CarouWheel() {
                       transform: `scale(${circle.scale})`,
                     }}
                   >
-                    {/* {text} */}
+                    {slides[index]}
                     {/* {calculateArcLength(
                       containerSize.width / 2,
                       circleSize / 2,
                       containerSize.width / 2 - circleSize / 2,
                     )} */}
-                    {circle.arcLength.toFixed(3)}
+                    {/*{circle.arcLength.toFixed(3)}}*/}
                   </div>
                 </div>
               </div>
@@ -183,7 +182,7 @@ export default function CarouWheel() {
         </div>
       </div>
       <div
-        className="basis-0 flex-grow-[2.5] relative overflow-hidden"
+        className="basis-0 flex-grow-[1] relative overflow-hidden"
         ref={emblaRef}
       >
         <div className="h-full relative">
