@@ -25,7 +25,7 @@ function calculateArcLength(R: number, r: number): number {
 
 export default function CarouWheel() {
   const slides = ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven']
-  const circleBaseSize = 60
+  const circleBaseSize = 40
 
   const scaleEasing = useMemo(() => bezier(1, 0, 0.8, 0.8), [])
 
@@ -117,7 +117,7 @@ export default function CarouWheel() {
   const margin = (circleBaseSize * circleScaleMax) / 2
 
   return (
-    <div className="h-[42rem] min-h-[42rem] w-[54rem] min-w-[42rem] flex rounded-3xl outline outline-zinc-500/30 resize overflow-hidden">
+    <div className="h-[28rem] min-h-[28rem] w-[36rem] min-w-[28rem] flex text-xs rounded-3xl outline outline-zinc-500/30 resize overflow-hidden">
       <div
         className="basis-0 flex-grow relative"
         style={{
