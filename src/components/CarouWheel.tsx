@@ -3,36 +3,11 @@ import useEmblaCarousel from 'embla-carousel-react'
 import useElementSize from '../hooks/useElementSize'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import bezier from 'bezier-easing'
-
-const DEGREES_TO_RADIANS = Math.PI / 180
-const RADIANS_TO_DEGREES = 180 / Math.PI
-
-function degreesToArcLength(angle: number, radius: number) {
-  const thetaRadians = angle * DEGREES_TO_RADIANS
-  return radius * thetaRadians
-}
-
-function arcLengthToDegrees(arcLength: number, radius: number) {
-  const thetaRadians = arcLength / radius
-  return thetaRadians * RADIANS_TO_DEGREES
-}
-
-function calculateArcLengthOccupiedByACircleOnACircle(
-  primaryCircleRadius: number,
-  auxiliaryCircleRadius: number,
-) {
-  let cosTheta =
-    (2 * auxiliaryCircleRadius ** 2 - primaryCircleRadius ** 2) /
-    (2 * auxiliaryCircleRadius ** 2)
-
-  if (cosTheta < -1) cosTheta = -1
-  if (cosTheta > 1) cosTheta = 1
-
-  const theta = Math.acos(cosTheta / 2)
-
-  const arcLength = auxiliaryCircleRadius * theta
-  return arcLength
-}
+import {
+  arcLengthToDegrees,
+  calculateArcLengthOccupiedByACircleOnACircle,
+  degreesToArcLength,
+} from '../utils/CarouWheel'
 
 export default function CarouWheel() {
   const slides = [
