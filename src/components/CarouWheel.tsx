@@ -63,8 +63,6 @@ export default function CarouWheel() {
   const circleScaleMax = 3
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
-    align: 'center',
-    loop: false,
     axis: 'y',
     dragFree: true,
   })
