@@ -139,14 +139,14 @@ export default function CarouWheel() {
           {positionedCircles.map((circle, index) => (
             <div
               key={index}
-              className="absolute inset-0 flex justify-end items-center"
+              className="absolute inset-0 flex justify-end items-center pointer-events-none"
               style={{
                 transform: `rotate(${circle.theta}deg)`,
               }}
             >
               <div className="size-0 flex justify-center items-center">
                 <div
-                  className="shrink-0 flex justify-center items-center rounded-full bg-zinc-500/30"
+                  className="shrink-0 flex justify-center items-center rounded-full bg-zinc-500/30 pointer-events-auto"
                   style={{
                     width: `${circleBaseSize}px`,
                     height: `${circleBaseSize}px`,
