@@ -1,4 +1,4 @@
-import type { EmblaCarouselType, EmblaOptionsType } from 'embla-carousel'
+import type { EmblaCarouselType } from 'embla-carousel'
 import useEmblaCarousel from 'embla-carousel-react'
 import useElementSize from '../hooks/useElementSize'
 import { useCallback, useEffect, useMemo, useState } from 'react'
