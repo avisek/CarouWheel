@@ -5,9 +5,6 @@ import { fileURLToPath } from 'node:url'
 import githubPages from './vite-plugins/githubPages'
 import add404Html from './vite-plugins/add404Html'
 
-const developmentPort = 3000
-const previewPort = 4000
-
 const rootDir = dirname(fileURLToPath(import.meta.url))
 const srcDir = resolve(rootDir, './src')
 const distDir = resolve(rootDir, './dist')
@@ -21,12 +18,6 @@ export default defineConfig({
   envPrefix: 'PUBLIC_',
   server: {
     host: true,
-    port: developmentPort,
-    strictPort: true,
-  },
-  preview: {
-    port: previewPort,
-    strictPort: true,
   },
   build: {
     outDir: distDir,
