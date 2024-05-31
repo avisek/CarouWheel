@@ -29,10 +29,11 @@ export default function CarouWheel() {
 
   const scaleEasing = useMemo(() => bezier(1, 0, 0.8, 0.8), [])
 
-  const [containerRef, containerSize] = useElementSize()
+  const [primaryCircleRef, primaryCircleSize] = useElementSize()
+  const primaryCircleRadius = primaryCircleSize.width / 2
 
   // const circleBaseSize = 40
-  const circleBaseSize = (40 / 328) * containerSize.height
+  const circleBaseSize = (40 / 328) * primaryCircleSize.height
 
   const circleScaleMin = 1
   const circleScaleMax = 3
@@ -72,7 +73,7 @@ export default function CarouWheel() {
     const circleSize = circleBaseSize * circleScale
 
     const arcLength = calculateArcLengthOccupiedByACircleOnACircle(
-      containerSize.width / 2,
+      primaryCircleRadius,
       circleSize / 2,
     )
 
@@ -97,8 +98,7 @@ export default function CarouWheel() {
   const totalArcLength = totalCirclesArcLength + space * (circles.length + 1)
 
   let currentPosition =
-    -totalArcLength / 2 +
-    degreesToArcLength(gravityAngle, containerSize.width / 2)
+    -totalArcLength / 2 + degreesToArcLength(gravityAngle, primaryCircleRadius)
 
   currentPosition += space / 2
   const positionedCircles = circles.map((circle) => {
@@ -110,7 +110,7 @@ export default function CarouWheel() {
     currentPosition += circle.arcLength / 2
     currentPosition += space / 2
 
-    const theta = arcLengthToDegrees(position, containerSize.width / 2)
+    const theta = arcLengthToDegrees(position, primaryCircleRadius)
 
     return {
       ...circle,
@@ -133,7 +133,7 @@ export default function CarouWheel() {
         }}
       >
         <div
-          ref={containerRef}
+          ref={primaryCircleRef}
           className="absolute inset-y-0 right-0 aspect-square rounded-full outline outline-zinc-500/30"
         >
           {positionedCircles.map((circle, index) => (
