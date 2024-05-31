@@ -11,7 +11,7 @@ export default function githubPages(): PluginOption {
     apply: 'build',
     config(config) {
       if (process.env['GITHUB_ACTIONS'] !== 'true') return
-      const [userName, repoName] = process.env['GITHUB_REPOSITORY'].split('/')
+      const [userName, repoName] = process.env['GITHUB_REPOSITORY']!.split('/')
       if (repoName === `${userName}.github.io`) return
       config.base = `/${repoName}${config.base ?? '/'}`
     },
