@@ -1,6 +1,5 @@
 import type { EmblaCarouselType, EmblaOptionsType } from 'embla-carousel'
 import useEmblaCarousel from 'embla-carousel-react'
-import Autoplay from 'embla-carousel-autoplay'
 import useElementSize from '../hooks/useElementSize'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import bezier from 'bezier-easing'
@@ -63,10 +62,12 @@ export default function CarouWheel() {
   const circleScaleMin = 1
   const circleScaleMax = 3
 
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    { align: 'center', loop: false, axis: 'y', dragFree: true },
-    // [Autoplay({ delay: 1000 })],
-  )
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: 'center',
+    loop: false,
+    axis: 'y',
+    dragFree: true,
+  })
 
   const [scrollProgress, setScrollProgress] = useState(0)
   const onScroll = useCallback((emblaApi: EmblaCarouselType) => {
