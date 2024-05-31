@@ -5,7 +5,7 @@ export default function useElementSize<
   T extends HTMLElement = HTMLDivElement,
 >(): [MutableRefObject<T | null>, DOMRect] {
   const targetRef = useRef<T | null>(null)
-  const [size, setSize] = useState(new DOMRect(0, 0, 0, 0))
+  const [size, setSize] = useState(new DOMRect())
 
   useLayoutEffect(() => {
     targetRef.current && setSize(targetRef.current.getBoundingClientRect())
